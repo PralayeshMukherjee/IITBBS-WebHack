@@ -9,7 +9,7 @@ import type { Asteroid } from '@/lib/nasa-api'
 /* ================= CONFIG ================= */
 
 const MAX_SIM_DAYS = 365 * 20
-const AUTO_SPEED = 30 // days/sec
+const AUTO_SPEED = 30
 
 /* ================= TYPES ================= */
 
@@ -23,9 +23,10 @@ type Planet = {
   orbitRadius: number
   period: number
   texture: string
+  hasRings?: boolean
 }
 
-/* ================= PLANETS ================= */
+/* ================= PLANET DATA ================= */
 
 const PLANETS: Planet[] = [
   { name: 'Mercury', radius: 0.25, orbitRadius: 2.2, period: 88, texture: '/textures/mercury.jpg' },
@@ -33,10 +34,38 @@ const PLANETS: Planet[] = [
   { name: 'Earth', radius: 0.38, orbitRadius: 3.8, period: 365, texture: '/textures/earth.jpg' },
   { name: 'Mars', radius: 0.3, orbitRadius: 4.6, period: 687, texture: '/textures/mars.jpg' },
   { name: 'Jupiter', radius: 1.0, orbitRadius: 6.0, period: 4333, texture: '/textures/jupiter.jpg' },
-  { name: 'Saturn', radius: 0.9, orbitRadius: 7.5, period: 10759, texture: '/textures/saturn.jpg' },
+  {
+    name: 'Saturn',
+    radius: 0.9,
+    orbitRadius: 7.5,
+    period: 10759,
+    texture: '/textures/saturn.jpg',
+    hasRings: true,
+  },
   { name: 'Uranus', radius: 0.6, orbitRadius: 9.0, period: 30687, texture: '/textures/uranus.jpg' },
   { name: 'Neptune', radius: 0.6, orbitRadius: 10.5, period: 60190, texture: '/textures/neptune.jpg' },
 ]
+
+/* ================= HELPERS ================= */
+
+function createAsteroidGeometry(radius: number, seed: number) {
+  const geometry = new THREE.IcosahedronGeometry(radius, 1)
+  const pos = geometry.attributes.position
+  const rand = Math.sin(seed) * 10000
+
+  for (let i = 0; i < pos.count; i++) {
+    const offset = 1 + 0.3 * Math.sin(i * 12.9898 + rand)
+    pos.setXYZ(
+      i,
+      pos.getX(i) * offset,
+      pos.getY(i) * offset,
+      pos.getZ(i) * offset
+    )
+  }
+
+  geometry.computeVertexNormals()
+  return geometry
+}
 
 /* ================= TIME CONTROLLER ================= */
 
@@ -75,6 +104,52 @@ function CameraRig({ active }: { active: boolean }) {
   return null
 }
 
+/* ================= SUN ================= */
+
+function SunMesh() {
+  const texture = useTexture('/textures/sun.jpg')
+
+  return (
+    <mesh>
+      <sphereGeometry args={[1.6, 64, 64]} />
+      <meshStandardMaterial
+        map={texture}
+        emissive="#ffaa00"
+        emissiveIntensity={1.5}
+      />
+    </mesh>
+  )
+}
+
+/* ================= ORBIT RING ================= */
+
+function OrbitRing({ radius }: { radius: number }) {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[radius - 0.01, radius + 0.01, 128]} />
+      <meshBasicMaterial color="#444" transparent opacity={0.4} />
+    </mesh>
+  )
+}
+
+/* ================= SATURN RINGS ================= */
+
+function SaturnRings() {
+  const ringTexture = useTexture('/textures/saturn_ring.png')
+
+  return (
+    <mesh rotation={[Math.PI / 2.2, 0, 0]}>
+      <ringGeometry args={[1.1, 1.8, 64]} />
+      <meshStandardMaterial
+        map={ringTexture}
+        transparent
+        side={THREE.DoubleSide}
+        opacity={0.9}
+      />
+    </mesh>
+  )
+}
+
 /* ================= PLANET ================= */
 
 function PlanetMesh({
@@ -90,7 +165,7 @@ function PlanetMesh({
   const angle = (2 * Math.PI * simTime) / planet.period
 
   return (
-    <mesh
+    <group
       position={[
         Math.cos(angle) * planet.orbitRadius,
         0,
@@ -102,9 +177,17 @@ function PlanetMesh({
       }}
       onPointerOut={() => onHover(null)}
     >
-      <sphereGeometry args={[planet.radius, 48, 48]} />
-      <meshStandardMaterial map={texture} />
-    </mesh>
+      <mesh>
+        <sphereGeometry args={[planet.radius, 48, 48]} />
+        <meshStandardMaterial
+          map={texture}
+          emissive={planet.name === 'Earth' ? '#0033ff' : undefined}
+          emissiveIntensity={planet.name === 'Earth' ? 0.4 : 0}
+        />
+      </mesh>
+
+      {planet.hasRings && <SaturnRings />}
+    </group>
   )
 }
 
@@ -144,10 +227,16 @@ function AsteroidMesh({
     return Math.min(Math.max(km / 10, 0.18), 0.6)
   }, [asteroid])
 
+  const geometry = useMemo(
+    () => createAsteroidGeometry(size, index),
+    [size, index]
+  )
+
   const angle = simTime * speed + index
 
   return (
     <mesh
+      geometry={geometry}
       position={[
         Math.cos(angle) * orbitRadius,
         Math.sin(angle * 0.35) * 0.6,
@@ -163,11 +252,12 @@ function AsteroidMesh({
         onSelect(asteroid)
       }}
     >
-      <sphereGeometry args={[size, 20, 20]} />
       <meshStandardMaterial
-        color={selected ? '#00ffff' : '#ff3333'}
-        emissive={selected ? '#00ffff' : '#ff0000'}
-        emissiveIntensity={selected ? 1.2 : 0.6}
+        color={selected ? '#00ffff' : '#b22222'}
+        roughness={1}
+        metalness={0.05}
+        emissive={selected ? '#00ffff' : '#660000'}
+        emissiveIntensity={selected ? 1.2 : 0.4}
       />
     </mesh>
   )
@@ -199,8 +289,7 @@ export default function Asteroid3DVisualizer({ asteroids }: Props) {
     <div className="relative w-full h-[50vh] bg-gray-900 rounded-lg overflow-hidden">
       {hover && <Tooltip text={hover} pos={mouse} />}
 
-      {/* UI */}
-      <div className="absolute top-2 left-2 z-10 flex gap-2">
+      <div className="absolute top-2 left-2 z-10">
         <button
           onClick={() => setAuto(a => !a)}
           className="px-3 py-1 text-xs bg-gray-800 text-white rounded"
@@ -208,19 +297,6 @@ export default function Asteroid3DVisualizer({ asteroids }: Props) {
           {auto ? 'Pause' : 'Auto'}
         </button>
       </div>
-
-      {!auto && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] z-10">
-          <input
-            type="range"
-            min={0}
-            max={MAX_SIM_DAYS}
-            value={simTime}
-            onChange={e => setSimTime(Number(e.target.value))}
-            className="w-full"
-          />
-        </div>
-      )}
 
       <Canvas camera={{ position: [8, 4, 9], fov: 50 }}>
         <Suspense fallback={null}>
@@ -230,23 +306,21 @@ export default function Asteroid3DVisualizer({ asteroids }: Props) {
           <ambientLight intensity={0.35} />
           <directionalLight position={[6, 6, 6]} intensity={1.2} />
 
-          {/* Sun */}
-          <mesh>
-            <sphereGeometry args={[1.4, 48, 48]} />
-            <meshStandardMaterial emissive="#ff9900" emissiveIntensity={0.9} />
-          </mesh>
+          <SunMesh />
 
           <group scale={1.8}>
             {PLANETS.map(p => (
-              <PlanetMesh
-                key={p.name}
-                planet={p}
-                simTime={simTime}
-                onHover={(label, e) => {
-                  if (e) setMouse({ x: e.clientX, y: e.clientY })
-                  setHover(label)
-                }}
-              />
+              <group key={p.name}>
+                <OrbitRing radius={p.orbitRadius * 1.8} />
+                <PlanetMesh
+                  planet={p}
+                  simTime={simTime}
+                  onHover={(label, e) => {
+                    if (e) setMouse({ x: e.clientX, y: e.clientY })
+                    setHover(label)
+                  }}
+                />
+              </group>
             ))}
 
             {asteroids.map((a, i) => (

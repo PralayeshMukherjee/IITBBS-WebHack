@@ -6,125 +6,144 @@ import astronaut from '@/public/bglog.png'
 import space from '@/public/images/bg.jpg'
 import { useEffect, useState } from 'react'
 
-export const metadata = {
-  title: 'login',
-  description: 'Log into your account',
-}
-
 const LoginPage: FC = () => {
   const [isClient, setIsClient] = useState(false)
-  
+
   useEffect(() => {
     setIsClient(true)
   }, [])
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#060b1a] text-white flex items-center justify-center px-6">
+    <div className="relative min-h-screen overflow-hidden bg-[#020617] text-slate-200 flex items-center justify-center px-6">
       
-      {isClient && (
-        <>
-          <div className="stars" />
-          <div className="stars2" />
-          <div className="stars3" />
-        </>
-      )}
+      {/* 1. Enhanced Background Layers */}
       <div className="absolute inset-0 z-0">
         <Image
           src={space}
           alt="Background"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-40 scale-105"
           priority
         />
-
-        <div className="absolute inset-0 bg-black/40" />
+        {/* Animated Nebula Glows */}
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse delay-700" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#020617]/60 to-[#020617]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm sm:max-w-md">
-        <div className="absolute bottom-4 -top-21 transform -translate-x-1/2 sm:-top-26 left-[60%] z-20">
+      {/* Animated Stars */}
+      {isClient && (
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="stars" />
+          <div className="stars2" />
+        </div>
+      )}
+
+      <div className="relative z-10 w-full max-w-md">
+        
+        {/* 2. Floating Astronaut with Animation */}
+        <div className="absolute -top-35 left-1/2 -translate-x-1/2 z-20">
           <Image
             src={astronaut}
             alt="astronaut"
-            className="w-40 sm:w-48 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            className="w-44 sm:w-52 drop-shadow-[0_20px_50px_rgba(0,150,255,0.3)]"
             priority
           />
         </div>
 
-        <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-xl p-6 sm:p-8 shadow-2xl border border-white/10 pt-16 mt-12">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-mono tracking-wide">Get Started</h2>
-            <p className="text-sm text-gray-300 mt-1 border-b border-white/20 inline-block pb-1">
-              Sign in to your account
+        {/* 3. Modern Glassmorphism Card */}
+        <div className="relative z-10 bg-white/3 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)] border border-white/10 mt-10">
+          
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold tracking-tight bg-linear-to-r from-white to-slate-400 bg-clip-text text-transparent">
+              Welcome Back
+            </h2>
+            <p className="text-slate-400 text-sm mt-2">
+              Enter your credentials to access the station
             </p>
           </div>
 
-          <div className="flex flex-col gap-5">
-            <div>
-              <label className="text-sm font-mono block mb-1">User Name</label>
+          <form className="space-y-6">
+            <div className="group">
+              <label className="text-xs font-medium uppercase tracking-widest text-slate-500 mb-2 block ml-1">
+                Username
+              </label>
               <input
                 type="text"
-                placeholder="Username"
-                className="w-full bg-transparent border-b border-white/30 px-2 py-2 focus:outline-none focus:border-white"
+                placeholder="Enter username"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300 placeholder:text-slate-600"
               />
             </div>
 
-            <div>
-              <label className="text-sm font-mono block mb-1">Password</label>
+            <div className="group">
+              <label className="text-xs font-medium uppercase tracking-widest text-slate-500 mb-2 block ml-1">
+                Password
+              </label>
               <input
                 type="password"
-                placeholder="Password"
-                className="w-full bg-transparent border-b border-white/30 px-2 py-2 focus:outline-none focus:border-white"
+                placeholder="••••••••"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300 placeholder:text-slate-600"
               />
             </div>
-          </div>
 
-          <div className="flex justify-center gap-4 mt-8">
-            {['B', 'B', 'B'].map((label, i) => (
-              <button
-                key={i}
-                type="button"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition shadow-[0_0_15px_rgba(0,150,255,0.4)]"
-              >
-                {label}
-              </button>
-            ))}
+            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg shadow-blue-900/20 active:scale-[0.98]">
+              Sign In
+            </button>
+          </form>
+
+          {/* 4. Social Logins with Modern Icons */}
+          <div className="mt-8">
+            <div className="relative flex items-center justify-center mb-6">
+              <div className="border-t border-white/10 w-full"></div>
+              <span className="bg-transparent px-4 text-xs text-slate-500 uppercase tracking-widest absolute italic">Or connect via</span>
+            </div>
+            
+            <div className="flex justify-center gap-4">
+              {[1, 2, 3].map((i) => (
+                <button
+                  key={i}
+                  className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
+                >
+                  <div className="w-5 h-5 bg-slate-400 group-hover:bg-blue-400 rounded-sm transition-colors" />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+
+        <p className="text-center mt-8 text-slate-500 text-sm">
+          Don&apos;t have an account? <span className="text-blue-400 cursor-pointer hover:underline">Launch a new profile</span>
+        </p>
       </div>
 
       <style jsx global>{`
-        .stars,
-        .stars2,
-        .stars3 {
+        .stars, .stars2 {
           position: absolute;
           width: 1px;
           height: 1px;
           background: transparent;
-          animation: animStar linear infinite;
         }
-
         .stars {
-          box-shadow: ${isClient ? generateStars(200, '1') : 'none'};
-          animation-duration: 50s;
+          box-shadow: ${isClient ? generateStars(700, '0.9') : 'none'};
+          animation: animStar 150s linear infinite;
         }
-
         .stars2 {
-          box-shadow: ${isClient ? generateStars(150, '0.6') : 'none'};
-          animation-duration: 100s;
-        }
-
-        .stars3 {
-          box-shadow: ${isClient ? generateStars(100, '0.3') : 'none'};
-          animation-duration: 150s;
+          box-shadow: ${isClient ? generateStars(200, '0.4') : 'none'};
+          animation: animStar 100s linear infinite;
         }
 
         @keyframes animStar {
-          from {
-            transform: translateY(0);
-          }
-          to {
-            transform: translateY(-2000px);
-          }
+          from { transform: translateY(0); }
+          to { transform: translateY(-2000px); }
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translate(-50%, 0px); }
+          50% { transform: translate(-50%, -15px); }
+        }
+
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
         }
       `}</style>
     </div>
@@ -134,10 +153,8 @@ const LoginPage: FC = () => {
 export default LoginPage
 
 function generateStars(count: number, opacity: string): string {
+  if (typeof window === 'undefined') return ''
   return Array.from({ length: count })
-    .map(
-      () =>
-        `${Math.random() * 2000}px ${Math.random() * 2000}px rgba(255,255,255,${opacity})`
-    )
+    .map(() => `${Math.random() * 2000}px ${Math.random() * 2000}px rgba(255,255,255,${opacity})`)
     .join(',')
 }
