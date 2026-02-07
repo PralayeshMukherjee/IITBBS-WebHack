@@ -15,8 +15,7 @@ const LoginPage: FC = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#020617] text-slate-200 flex items-center justify-center px-6">
-      
-      {/* 1. Enhanced Background Layers */}
+
       <div className="absolute inset-0 z-0">
         <Image
           src={space}
@@ -25,13 +24,11 @@ const LoginPage: FC = () => {
           className="object-cover opacity-40 scale-105"
           priority
         />
-        {/* Animated Nebula Glows */}
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse delay-700" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#020617]/60 to-[#020617]" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#020617]/60 to-[#020617]" />
       </div>
 
-      {/* Animated Stars */}
       {isClient && (
         <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="stars" />
