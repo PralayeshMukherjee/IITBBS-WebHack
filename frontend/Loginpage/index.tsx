@@ -1,60 +1,143 @@
-import bglog from '../public/bglog.png'
+'use client'
+
 import Image from 'next/image'
+import type { FC } from 'react'
+import astronaut from '@/public/bglog.png'
+import space from '@/public/images/bg.jpg'
+import { useEffect, useState } from 'react'
 
-export const meta = () => ([
-    { title: 'login' },
-    { name: 'description', content: 'Log into your account' },
-])
-
-const LoginPage = () => {
-   
-
-
-   
-    return ( 
-        <>
-            <div className='flex justify-center min-h-screen z-0 bg-gray-900 text-white'>
-                <Image
-                   src= {bglog}
-                   alt="Background Image"
-                   className=" h-[35vw] w-[30vw] opacity-100 pb-43 left-0 z-2"
-                   />
-            <section className=" z-1  w-[30%]  shadow-lg inset-shadow-sm inset-shadow-neutral-500 absolute top-[56%] left-[20%] translate-x-1/2 -translate-y-1/2 bg-neutral-500 bg-[url(../public/images/sky.jpg)] bg-blend-multiply bg-opacity-60 bg-fixed rounded-lg p-8 flex flex-col items-center gap-6 mr-[20%]">
-                    <div className="flex flex-col items-center gap-2  text-center  ">
-                       
-                        <h2 className='text-2xl font-mono '>Get Started</h2>
-                        <p className='text-sm text-gray-300 border-b-2 font-mono'>Sign in to your account</p>
-                    </div>
-
-                    <div className="w-full">
-                        <p className='text-sm font-mono '>User Name</p>
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            className="w-full px-4 py-2 border-b-2  text-white  hover:cursor-pointer hover:border-b-gray-700"
-                            
-                        />
-
-                    </div>
-                      <div className="w-full">
-                        <p className='text-sm font-mono '>Password</p>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="w-full px-4 py-2  border-b-2 text-white hover:cursor-pointer hover:border-b-gray-700"
-                            
-                        />
-                        </div>
-                        <div>
-                        <button type="button" className="text-white bg-linear-to-r from-grey-500 via-grey-600 to-grey-700 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-grey-300 dark:focus:ring-grey-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-grey-800/80 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 mr-2">B</button>
-                        <button type="button" className="text-white bg-linear-to-r from-grey-500 via-grey-600 to-grey-700 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-grey-300 dark:focus:ring-grey-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-grey-800/80 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 mr-2">B</button>
-                        <button type="button" className="text-white bg-linear-to-r from-grey-500 via-grey-600 to-grey-700 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-grey-300 dark:focus:ring-grey-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-grey-800/80 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5 mr-2">B</button>
-                        </div>
-
-                </section>
-                </div>
-        </>
-    )
+export const metadata = {
+  title: 'login',
+  description: 'Log into your account',
 }
 
-export default LoginPage;
+const LoginPage: FC = () => {
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-[#060b1a] text-white flex items-center justify-center px-6">
+      
+      {isClient && (
+        <>
+          <div className="stars" />
+          <div className="stars2" />
+          <div className="stars3" />
+        </>
+      )}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={space}
+          alt="Background"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-sm sm:max-w-md">
+        <div className="absolute bottom-4 -top-21 transform -translate-x-1/2 sm:-top-26 left-[60%] z-20">
+          <Image
+            src={astronaut}
+            alt="astronaut"
+            className="w-40 sm:w-48 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            priority
+          />
+        </div>
+
+        <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-xl p-6 sm:p-8 shadow-2xl border border-white/10 pt-16 mt-12">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-mono tracking-wide">Get Started</h2>
+            <p className="text-sm text-gray-300 mt-1 border-b border-white/20 inline-block pb-1">
+              Sign in to your account
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-5">
+            <div>
+              <label className="text-sm font-mono block mb-1">User Name</label>
+              <input
+                type="text"
+                placeholder="Username"
+                className="w-full bg-transparent border-b border-white/30 px-2 py-2 focus:outline-none focus:border-white"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-mono block mb-1">Password</label>
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full bg-transparent border-b border-white/30 px-2 py-2 focus:outline-none focus:border-white"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-4 mt-8">
+            {['B', 'B', 'B'].map((label, i) => (
+              <button
+                key={i}
+                type="button"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition shadow-[0_0_15px_rgba(0,150,255,0.4)]"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        .stars,
+        .stars2,
+        .stars3 {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          background: transparent;
+          animation: animStar linear infinite;
+        }
+
+        .stars {
+          box-shadow: ${isClient ? generateStars(200, '1') : 'none'};
+          animation-duration: 50s;
+        }
+
+        .stars2 {
+          box-shadow: ${isClient ? generateStars(150, '0.6') : 'none'};
+          animation-duration: 100s;
+        }
+
+        .stars3 {
+          box-shadow: ${isClient ? generateStars(100, '0.3') : 'none'};
+          animation-duration: 150s;
+        }
+
+        @keyframes animStar {
+          from {
+            transform: translateY(0);
+          }
+          to {
+            transform: translateY(-2000px);
+          }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+export default LoginPage
+
+function generateStars(count: number, opacity: string): string {
+  return Array.from({ length: count })
+    .map(
+      () =>
+        `${Math.random() * 2000}px ${Math.random() * 2000}px rgba(255,255,255,${opacity})`
+    )
+    .join(',')
+}
