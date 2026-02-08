@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
+import { ArrowBigLeftDash , ArrowBigRightDash} from 'lucide-react';
 import {
   AlertTriangle,
   Radar,
@@ -16,24 +17,37 @@ import {
   Navigation,
 } from 'lucide-react'
 import { format, addDays } from 'date-fns'
+import { Orbitron } from 'next/font/google'
 
 import AsteroidList from './components/asteroids/AsteroidList'
 import AsteroidStats from './components/asteroids/AesteroidStats'
 import AsteroidProfile from './components/asteroids/AsteroidProfile'
 import { nasaApi, type Asteroid } from '@/lib/nasa-api'
 
+/* ---------------- DYNAMIC IMPORTS ---------------- */
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  display: 'swap',
+})
+
 const Asteroid3DVisualizer = dynamic(
   () => import('./components/asteroids/Aesteroid3DVisualizer'),
   { ssr: false }
 )
+
 const OrbitTracker = dynamic(
   () => import('./components/asteroids/OrbitTracker'),
   { ssr: false }
 )
+
 const Speedometer = dynamic(
   () => import('./components/asteroids/Speedometer'),
   { ssr: false }
 )
+
+/* ---------------- MAIN COMPONENT ---------------- */
 
 export default function AsteroidDashboard() {
   const [date, setDate] = useState(() => format(new Date(), 'yyyy-MM-dd'))
@@ -97,39 +111,41 @@ export default function AsteroidDashboard() {
   /* ---------------- DASHBOARD VIEW ---------------- */
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#05080f] via-black to-[#05080f] text-white px-6 py-6 space-y-8">
-      
+    <div className="min-h-screen bg-gradient-to-br from-[#05080f] via-black to-[#05080f] text-white px-6 py-6 space-y-8">
+
       {/* HEADER */}
       <header className="flex flex-col md:flex-row justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-mono font-bold tracking-tight text-blue-300 bg-clip-text ">
-            Near Us
+          <h1 className="`${orbitron.className} text-4xl  tracking-widest font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent mb-0 ">
+            Near <span className="`${orbitron.className} text-4xl  tracking-widest text-gray-400  ">Us</span>
           </h1>
-          <p className="text-gray-400 mt-2 text-sm">
+         
+          <p className="text-gray-400 text-sm font-mono tracking-widest mt-0">
             Near-Earth object monitoring & trajectory intelligence
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Clock className="text-cyan-400" />
-          <span className="text-sm">
-            {format(new Date(date), 'MMM dd, yyyy')}
-          </span>
-          <button
+                    <button
             onClick={() =>
               setDate(format(addDays(new Date(date), -1), 'yyyy-MM-dd'))
             }
             className="btn-muted"
           >
-            Prev
+               <ArrowBigLeftDash className=" text-blue-400 text-shadow-blue-400 bg-transparent"/>
           </button>
+         
+          <span className="text-sm text-neutral-400 font-mono tracking-wide">
+            {format(new Date(date), 'MMM dd, yyyy')}
+          </span>
+          
           <button
             onClick={() =>
               setDate(format(addDays(new Date(date), 1), 'yyyy-MM-dd'))
             }
             className="btn-primary"
           >
-            Next
+           <ArrowBigRightDash className=" text-blue-400 text-shadow-blue-400 bg-transparent"/>
           </button>
         </div>
       </header>
@@ -137,17 +153,8 @@ export default function AsteroidDashboard() {
       {/* STATS */}
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         <Stat title="Tracked Objects" value={asteroids.length} icon={<Database />} />
-        <Stat
-          title="Hazardous"
-          value={hazardousCount}
-          danger
-          icon={<AlertTriangle />}
-        />
-        <Stat
-          title="Avg Diameter"
-          value={`${avgDiameter.toFixed(2)} km`}
-          icon={<Target />}
-        />
+        <Stat title="Hazardous" value={hazardousCount} danger icon={<AlertTriangle />} />
+        <Stat title="Avg Diameter" value={`${avgDiameter.toFixed(2)} km`} icon={<Target />} />
         <Stat
           title="Closest Pass"
           value={
@@ -173,11 +180,7 @@ export default function AsteroidDashboard() {
           <Panel title="Threat Analysis" icon={<Radar />}>
             <div className="grid grid-cols-2 gap-4">
               <Info label="Hazardous" value={hazardousCount} tone="red" />
-              <Info
-                label="Safe"
-                value={asteroids.length - hazardousCount}
-                tone="green"
-              />
+              <Info label="Safe" value={asteroids.length - hazardousCount} tone="green" />
             </div>
           </Panel>
         </div>
