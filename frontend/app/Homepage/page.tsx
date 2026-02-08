@@ -67,10 +67,11 @@ export default function Homepage() {
       </motion.div>
 
       <main className="relative z-30 px-16 pt-40 max-w-3xl text-white">
+ 
         <div className="mb-4 text-cyan-400 text-xs font-mono uppercase tracking-widest">
           System status nominal
         </div>
-
+     
         <h1 className={`${orbitron.className} text-5xl uppercase tracking-widest font-bold mb-8`}>
           Operator <br />
           <span className="text-cyan-400">Session Restored</span>
@@ -86,6 +87,7 @@ export default function Homepage() {
         <Link href="/AestDest" className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-mono rounded-md transition-colors duration-200 inline-block">
           Access Dashboard
           </Link>
+   
       </main>
     </div>
   );
