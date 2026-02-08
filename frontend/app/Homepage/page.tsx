@@ -43,7 +43,7 @@ export default function Homepage() {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen bg-[#02020a] overflow-hidden"
+      className="relative min-h-screen  bg-[#02020a] overflow-hidden"
     >
       <Navbar />
 
@@ -51,7 +51,7 @@ export default function Homepage() {
         <Image
           src={earthi}
           alt="Earth"
-          className="opacity-40 w-[90%] mx-auto mt-24"
+          className="opacity-40 w-[90%] mx-auto mt-24 h-[60%]"
           priority
         />
       </motion.div>
@@ -60,9 +60,9 @@ export default function Homepage() {
         <Image
           src={asteroHome}
           alt="Astronaut"
-          width={600}
-          height={600}
-          className="mx-auto mt-32"
+          width={400}
+          height={400}
+          className="mx-auto mt-60"
           priority
         />
       </motion.div>

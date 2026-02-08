@@ -7,7 +7,7 @@ import earthi from "../../public/images/earthi.png";
 import avt from "../../public/icon/avt.png";
 const Navbar = () => {
   return (
-    <div className="bg-[radial-gradient(circle,rgba(1,2,18,1)_0%,rgba(13,25,43,1)_100%)]">
+    <div className="bg-[radial-gradient(circle,rgba(1,2,18,1)_0%,rgba(13,25,43,1)_100%)] z-30 absolute top-0 left-0 w-full">
          <div className="flex items-center justify-between border-b border-amber-50 px-3">
         <Link href="/Homepage" className="text-blue-200 hover:text-gray-400 p-4 font-bold  uppercase tracking-widest shadow-blue-600  ">
           Cosmic Watch

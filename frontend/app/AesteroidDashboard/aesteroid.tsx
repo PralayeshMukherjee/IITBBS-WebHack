@@ -102,7 +102,7 @@ export default function AsteroidDashboard() {
       {/* HEADER */}
       <header className="flex flex-col md:flex-row justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-mono font-bold tracking-tight bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-mono font-bold tracking-tight text-blue-300 bg-clip-text ">
             Near Us
           </h1>
           <p className="text-gray-400 mt-2 text-sm">
