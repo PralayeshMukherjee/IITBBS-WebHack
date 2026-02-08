@@ -25,7 +25,7 @@ const Navbar = () => {
             </li>
 
             <li className="relative group">
-              <Link href="/" className="text-white">
+              <Link href="/HistoryPage" className="text-white">
                 <History />
               </Link>
               <span className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition bg-blue-950 text-white text-xs px-3 py-1 rounded-md border border-blue-900">
