@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Orbitron } from "next/font/google";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import Link from "next/link";
 import Navbar from "./navbar";
 
 import earthi from "../../public/images/earthi.png";
@@ -82,6 +83,9 @@ export default function Homepage() {
             </p>
           ))}
         </div>
+        <Link href="/AestDest" className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-mono rounded-md transition-colors duration-200 inline-block">
+          Access Dashboard
+          </Link>
       </main>
     </div>
   );
