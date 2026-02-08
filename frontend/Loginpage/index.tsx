@@ -5,7 +5,7 @@ import type { FC } from 'react'
 import astronaut from '@/public/bglog.png'
 import space from '@/public/images/bg.jpg'
 import { useEffect, useState } from 'react'
-
+import google from '@/public/images/google.jpg'
 const LoginPage: FC = () => {
   const [isClient, setIsClient] = useState(false)
 
@@ -96,12 +96,14 @@ const LoginPage: FC = () => {
             </div>
             
             <div className="flex justify-center gap-4">
-              
-                <button
-                  className="w-50 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
+                  <button
+                  className="w-80 h-22 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between  p-4 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group "
                 >
-                 Login with Google
-                </button>
+              
+                
+              <Image src={google} alt="Google" className="w-20 h-20 rounded-full p-2 cursor-pointer" />
+                <p className='pr-10 font-bold text-shadow-md'> Login with Google</p>
+              </button>
             </div>
           </div>
         </div>

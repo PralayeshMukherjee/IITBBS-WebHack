@@ -71,7 +71,7 @@ export default function Homepage() {
           System status nominal
         </div>
 
-        <h1 className={`${orbitron.className} text-5xl uppercase tracking-widest mb-8`}>
+        <h1 className={`${orbitron.className} text-5xl uppercase tracking-widest font-bold mb-8`}>
           Operator <br />
           <span className="text-cyan-400">Session Restored</span>
         </h1>

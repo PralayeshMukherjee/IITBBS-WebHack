@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <div className="bg-[radial-gradient(circle,rgba(1,2,18,1)_0%,rgba(13,25,43,1)_100%)]">
          <div className="flex items-center justify-between border-b border-amber-50 px-3">
-        <Link href="/Homepage" className="text-white hover:text-gray-400 p-4 font-semibold">
+        <Link href="/Homepage" className="text-blue-200 hover:text-gray-400 p-4 font-bold  uppercase tracking-widest shadow-blue-600/50 shadow-lg rounded-m hover:border-blue-500/70">
           Cosmic Watch
         </Link>
 
