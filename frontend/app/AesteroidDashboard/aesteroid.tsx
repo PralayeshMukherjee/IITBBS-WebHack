@@ -185,7 +185,7 @@ export default function AsteroidDashboard() {
           </Panel>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 border-2 border-neutral-800 rounded-lg p-4">
           <Panel title="Velocity" icon={<Zap />}>
             {asteroids[0] && <Speedometer asteroid={asteroids[0]} />}
           </Panel>
@@ -240,7 +240,7 @@ const Panel = ({ title, icon, children }: any) => (
   <motion.div
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    className="glass-panel"
+    className="glass-panel border-neutral-800"
   >
     {title && (
       <h2 className="flex items-center gap-2 mb-4 text-lg font-semibold">
