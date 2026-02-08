@@ -15,6 +15,7 @@ const AUTO_SPEED = 30
 
 interface Props {
   asteroids: Asteroid[]
+  focusId?: string
 }
 
 type Planet = {
