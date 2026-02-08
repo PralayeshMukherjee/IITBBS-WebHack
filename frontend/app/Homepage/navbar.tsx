@@ -10,7 +10,7 @@ const Navbar = () => {
     <div className="bg-[radial-gradient(circle,rgba(1,2,18,1)_0%,rgba(13,25,43,1)_100%)]">
          <div className="flex items-center justify-between border-b border-amber-50 px-3">
         <Link href="/Homepage" className="text-white hover:text-gray-400 p-4 font-semibold">
-          VOID
+          Cosmic Watch
         </Link>
 
         <nav>
@@ -38,7 +38,7 @@ const Navbar = () => {
                 <BellRing />
               </Link>
               <span className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition bg-blue-950 text-white text-xs px-3 py-1 rounded-md border border-blue-900">
-                Notifications
+                Alert
               </span>
             </li>
 
