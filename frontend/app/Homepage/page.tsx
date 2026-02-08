@@ -1,4 +1,5 @@
 "use client";
+import ChatbotIcon from "./Chaticon";
 
 import React from "react";
 import Image from "next/image";
@@ -87,7 +88,8 @@ export default function Homepage() {
         <Link href="/AestDest" className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-mono rounded-md transition-colors duration-200 inline-block">
           Access Dashboard
           </Link>
-   
+      <ChatbotIcon />
+
       </main>
     </div>
   );
