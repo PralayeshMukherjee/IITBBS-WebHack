@@ -16,8 +16,10 @@ import {
   Navigation,
 } from 'lucide-react'
 import { format, addDays } from 'date-fns'
+
 import AsteroidList from './components/asteroids/AsteroidList'
 import AsteroidStats from './components/asteroids/AesteroidStats'
+import AsteroidProfile from './components/asteroids/AsteroidProfile'
 import { nasaApi, type Asteroid } from '@/lib/nasa-api'
 
 const Asteroid3DVisualizer = dynamic(
@@ -36,32 +38,37 @@ const Speedometer = dynamic(
 export default function AsteroidDashboard() {
   const [date, setDate] = useState(() => format(new Date(), 'yyyy-MM-dd'))
   const [asteroids, setAsteroids] = useState<Asteroid[]>([])
-  const [selected, setSelected] = useState<Asteroid | null>(null)
+  const [focusedAsteroid, setFocusedAsteroid] = useState<Asteroid | null>(null)
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [updated, setUpdated] = useState('')
 
+  /* ---------------- DATA FETCH ---------------- */
+
   useEffect(() => {
     let active = true
+
     const load = async () => {
       setLoading(true)
       try {
         const data = await nasaApi.getAsteroidsFeed(date)
         if (!active) return
         setAsteroids(data)
-        setSelected(data[0] ?? null)
         setUpdated(new Date().toLocaleTimeString())
       } finally {
         if (active) setLoading(false)
       }
     }
+
     load()
     return () => {
       active = false
     }
   }, [date])
 
-  const hazardous = useMemo(
+  /* ---------------- DERIVED STATS ---------------- */
+
+  const hazardousCount = useMemo(
     () => asteroids.filter(a => a.is_potentially_hazardous_asteroid).length,
     [asteroids]
   )
@@ -69,16 +76,30 @@ export default function AsteroidDashboard() {
   const avgDiameter = useMemo(() => {
     if (!asteroids.length) return 0
     return (
-      asteroids.reduce((s, a) => {
+      asteroids.reduce((sum, a) => {
         const d = a.estimated_diameter.kilometers
-        return s + (d.estimated_diameter_min + d.estimated_diameter_max) / 2
+        return sum + (d.estimated_diameter_min + d.estimated_diameter_max) / 2
       }, 0) / asteroids.length
     )
   }, [asteroids])
 
+  /* ---------------- PROFILE VIEW ---------------- */
+
+  if (focusedAsteroid) {
+    return (
+      <AsteroidProfile
+        asteroid={focusedAsteroid}
+        onBack={() => setFocusedAsteroid(null)}
+      />
+    )
+  }
+
+  /* ---------------- DASHBOARD VIEW ---------------- */
+
   return (
     <div className="min-h-screen bg-linear-to-br from-[#05080f] via-black to-[#05080f] text-white px-6 py-6 space-y-8">
       
+      {/* HEADER */}
       <header className="flex flex-col md:flex-row justify-between gap-6">
         <div>
           <h1 className="text-4xl font-mono font-bold tracking-tight bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -88,66 +109,101 @@ export default function AsteroidDashboard() {
             Near-Earth object monitoring & trajectory intelligence
           </p>
         </div>
+
         <div className="flex items-center gap-3">
           <Clock className="text-cyan-400" />
-          <span className="text-sm">{format(new Date(date), 'MMM dd, yyyy')}</span>
-          <button onClick={() => setDate(format(addDays(new Date(date), -1), 'yyyy-MM-dd'))} className="btn-muted">
+          <span className="text-sm">
+            {format(new Date(date), 'MMM dd, yyyy')}
+          </span>
+          <button
+            onClick={() =>
+              setDate(format(addDays(new Date(date), -1), 'yyyy-MM-dd'))
+            }
+            className="btn-muted"
+          >
             Prev
           </button>
-          <button onClick={() => setDate(format(addDays(new Date(date), 1), 'yyyy-MM-dd'))} className="btn-primary">
+          <button
+            onClick={() =>
+              setDate(format(addDays(new Date(date), 1), 'yyyy-MM-dd'))
+            }
+            className="btn-primary"
+          >
             Next
           </button>
         </div>
       </header>
 
+      {/* STATS */}
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         <Stat title="Tracked Objects" value={asteroids.length} icon={<Database />} />
-        <Stat title="Hazardous" value={hazardous} danger icon={<AlertTriangle />} />
-        <Stat title="Avg Diameter" value={`${avgDiameter.toFixed(2)} km`} icon={<Target />} />
+        <Stat
+          title="Hazardous"
+          value={hazardousCount}
+          danger
+          icon={<AlertTriangle />}
+        />
+        <Stat
+          title="Avg Diameter"
+          value={`${avgDiameter.toFixed(2)} km`}
+          icon={<Target />}
+        />
         <Stat
           title="Closest Pass"
           value={
-            selected?.close_approach_data?.[0]?.miss_distance?.kilometers
-              ? `${(parseFloat(selected.close_approach_data[0].miss_distance.kilometers) / 1e6).toFixed(2)}M km`
+            asteroids[0]?.close_approach_data?.[0]?.miss_distance?.kilometers
+              ? `${(
+                  parseFloat(
+                    asteroids[0].close_approach_data[0].miss_distance.kilometers
+                  ) / 1e6
+                ).toFixed(2)}M km`
               : 'N/A'
           }
           icon={<Navigation />}
         />
       </section>
 
+      {/* MAIN */}
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
           <Panel title="Solar System View" icon={<Globe />}>
-            {selected && <Asteroid3DVisualizer asteroids={asteroids} />}
+            <Asteroid3DVisualizer asteroids={asteroids} />
           </Panel>
 
           <Panel title="Threat Analysis" icon={<Radar />}>
             <div className="grid grid-cols-2 gap-4">
-              <Info label="Hazardous" value={hazardous} tone="red" />
-              <Info label="Safe" value={asteroids.length - hazardous} tone="green" />
+              <Info label="Hazardous" value={hazardousCount} tone="red" />
+              <Info
+                label="Safe"
+                value={asteroids.length - hazardousCount}
+                tone="green"
+              />
             </div>
           </Panel>
         </div>
 
         <div className="space-y-6">
           <Panel title="Velocity" icon={<Zap />}>
-            {selected && <Speedometer asteroid={selected} />}
+            {asteroids[0] && <Speedometer asteroid={asteroids[0]} />}
           </Panel>
+
           <Panel title="Orbit Path" icon={<Satellite />}>
-            {selected && <OrbitTracker asteroid={selected} />}
+            {asteroids[0] && <OrbitTracker asteroid={asteroids[0]} />}
           </Panel>
+
           <Panel title="Asteroid Metrics" icon={<Activity />}>
-            <AsteroidStats asteroid={selected} />
+            {asteroids[0] && <AsteroidStats asteroid={asteroids[0]} />}
           </Panel>
         </div>
       </section>
 
+      {/* LIST */}
       <Panel>
         <AsteroidList
           asteroids={asteroids}
           loading={loading}
-          selectedAsteroid={selected}
-          onSelectAsteroid={setSelected}
+          selectedAsteroid={null}
+          onSelectAsteroid={setFocusedAsteroid}
           viewMode={viewMode}
         />
       </Panel>
@@ -192,8 +248,22 @@ const Panel = ({ title, icon, children }: any) => (
   </motion.div>
 )
 
-const Info = ({ label, value, tone }: { label: string; value: number; tone: 'red' | 'green' }) => (
-  <div className={`rounded-xl p-4 ${tone === 'red' ? 'bg-red-900/20 text-red-400' : 'bg-green-900/20 text-green-400'}`}>
+const Info = ({
+  label,
+  value,
+  tone,
+}: {
+  label: string
+  value: number
+  tone: 'red' | 'green'
+}) => (
+  <div
+    className={`rounded-xl p-4 ${
+      tone === 'red'
+        ? 'bg-red-900/20 text-red-400'
+        : 'bg-green-900/20 text-green-400'
+    }`}
+  >
     <p className="text-xs">{label}</p>
     <p className="text-2xl font-bold text-white">{value}</p>
   </div>
